@@ -15,6 +15,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.workmanager.databinding.ActivityMainBinding
 import android.Manifest
+import androidx.work.Constraints
+import androidx.work.NetworkType
 
 class MainActivity : AppCompatActivity(), OnClickListener {
 
@@ -56,8 +58,12 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         val data = Data.Builder()
             .putString(MyWorker.EXTRA_CITY, binding.editCity.text.toString())
             .build()
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
         val oneTimeWorkRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
             .setInputData(data)
+            .setConstraints(constraints)
             .build()
         workManager.enqueue(oneTimeWorkRequest)
         workManager.getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
